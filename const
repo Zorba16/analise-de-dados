@@ -1,0 +1,30 @@
+const obterCSS = (variavel) => {
+    return getComputedStyle(document.body).getPropertyValue(variavel)
+}
+
+const configuracoesTick = {
+    cor: obterCSS('--primary-color'),
+    tamanho: 16,
+    fonte: obterCSS('--font')
+}
+
+function criarGrafico(dados, configuracaoLayout) {
+    const elementoGrafico = document.createElement('div')
+    elementoGrafico.className = 'elemento-grafico'
+    document.getElementById('container-graficos').appendChild(elementoGrafico)
+    const configuracoes = {
+        responsive: true,
+        displayModeBar: false
+    }
+    Plotly.newPlot(elementoGrafico, dados, configuracaoLayout, configuracoes)
+}
+
+function adicionarTexto(conteudoTexto) {
+    const container = document.getElementById('container-graficos')
+    const paragrafo = document.createElement('p')
+    paragrafo.classList.add('container-graficos__texto')
+    paragrafo.innerHTML = conteudoTexto
+    container.appendChild(paragrafo)
+}
+
+export { obterCSS, configuracoesTick, criarGrafico, adicionarTexto }
