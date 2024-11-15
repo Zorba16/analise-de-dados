@@ -1,0 +1,60 @@
+import { criarGrafico, getCSS, incluirTexto } from "./comum.js"
+
+async function redesFavoritasEscola() {
+    const dadosArmazenadosString = localStorage.getItem('dadosRedesSociais')
+    if (dadosArmazenadosString) {
+        const dadosArmazenados = JSON.parse(dadosArmazenadosString)
+        tratarDados(dadosArmazenados)
+    } else {
+        const apiUrl = 'https://script.googleusercontent.com/macros/echo?user_content_key=rSe23zaQC7gOvWgFJbdtPaqh7ewsO5hQmusYOeqdorTRN8C25vVV3BicsPoS6HS3jnJY9NHhy_pNZj6prQdxDH3305Mro8vNm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnPvESZ9fvnAeFWqfIvIacdoRZcVMZ-nDSydw9_0gseo2TN3y60rOTtwDBCYnKQf6yIqgf8yOzNfccjP633C9VnHmUmPZvRBJY9z9Jw9Md8uu&lib=MCARBaBtNBMHKiEwMeRap3j6V_G7SlGWF'
+        const resposta = await fetch(apiUrl)
+        const dados = await resposta.json()
+        localStorage.setItem('dadosRedesSociais', JSON.stringify(dados))
+        tratarDados(dados)
+    }
+}
+
+function tratarDados(dados) {
+    const redes = dados.slice(1).map(item => item[1])
+    const frequenciaRedes = redes.reduce((acumulador, rede) => {
+        acumulador[rede] = (acumulador[rede] || 0) + 1
+        return acumulador
+    }, {})
+    const valores = Object.values(frequenciaRedes)
+    const etiquetas = Object.keys(frequenciaRedes)
+
+    const dadosGrafico = [
+        {
+            values: valores,
+            labels: etiquetas,
+            type: 'pie',
+            textinfo: 'label+percent'
+        }
+    ]
+
+    const configuracoesLayout = {
+        plot_bgcolor: getCSS('--cor-fundo'),
+        paper_bgcolor: getCSS('--cor-fundo'),
+        height: 700,
+        title: {
+            text: 'Redes sociais favoritas na minha escola',
+            x: 0,
+            font: {
+                color: getCSS('--cor-principal'),
+                family: getCSS('--fonte-padrao'),
+                size: 30
+            }
+        },
+        legend: {
+            font: {
+                color: getCSS('--cor-principal'),
+                size: 16
+            }
+        }
+    }
+
+    criarGrafico(dadosGrafico, configuracoesLayout)
+    incluirTexto(`Na amostra entrevistada na escola, destaca-se o <span>Instagram</span> como uma das redes sociais mais populares, refletindo uma tendência global.`)
+}
+
+redesFavoritasEscola()
