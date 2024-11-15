@@ -1,0 +1,20 @@
+const apiUrl = 'https://raw.githubusercontent.com/guilhermeonrails/api/main/dados-globais.json'
+
+async function exibirInformacoesGlobais() {
+    const resposta = await fetch(apiUrl)
+    const dados = await resposta.json()
+    const totalConectados = (dados.total_pessoas_conectadas / 1e9)
+    const populacaoMundial = (dados.total_pessoas_mundo / 1e9)
+    const horasMedia = Math.floor(dados.tempo_medio)
+    const minutosMedia = Math.round((dados.tempo_medio - horasMedia) * 60)
+    const porcentagemConectados = ((totalConectados / populacaoMundial) * 100).toFixed(2)
+
+    const texto = document.createElement('p')
+    texto.classList.add('container-graficos__texto')
+    texto.innerHTML = `Você sabia que o planeta tem cerca de <span>${populacaoMundial} bilhões</span> de habitantes e que aproximadamente <span>${totalConectados} bilhões</span> estão conectados em redes sociais? Essas pessoas passam em média <span>${horasMedia} horas</span> e <span>${minutosMedia} minutos</span> conectadas.<br>Isso equivale a cerca de <span>${porcentagemConectados}%</span> da população mundial.`
+
+    const container = document.getElementById('container-graficos')
+    container.appendChild(texto)
+}
+
+exibirInformacoesGlobais()
