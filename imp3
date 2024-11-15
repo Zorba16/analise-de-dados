@@ -1,0 +1,46 @@
+import { getCSS, criarGrafico, incluirTexto } from "./comum.js"
+
+async function redesMaisQueridasMundo() {
+    const apiUrl = 'https://raw.githubusercontent.com/guilhermeonrails/api/main/redes-favoritas.json'
+    const resposta = await fetch(apiUrl)
+    const dados = await resposta.json()
+    const plataformas = Object.keys(dados)
+    const numeros = Object.values(dados)
+
+    const dadosGrafico = [
+        {
+            values: numeros,
+            labels: plataformas,
+            type: 'pie',
+            textinfo: 'label+percent'
+        }
+    ]
+
+    const configuracoesLayout = {
+        plot_bgcolor: getCSS('--fundo-grafico'),
+        paper_bgcolor: getCSS('--fundo-grafico'),
+        height: 700,
+        title: {
+            text: 'Redes sociais preferidas pelos usuários',
+            x: 0,
+            font: {
+                color: getCSS('--cor-principal'),
+                family: getCSS('--fonte-padrao'),
+                size: 30
+            }
+        },
+        legend: {
+            font: {
+                color: getCSS('--cor-principal'),
+                size: 16
+            }
+        }
+    }
+
+    criarGrafico(dadosGrafico, configuracoesLayout)
+
+    incluirTexto(`Apesar de o <span>Instagram</span> ser a quarta rede em número de usuários no mundo, ele se destaca como a <span>mais apreciada pelos usuários</span>. A plataforma supera o <span>Facebook</span>, que lidera em usuários, mas ocupa apenas a terceira posição em popularidade. <br>Esses dados reforçam o forte vínculo emocional que os usuários têm com o Instagram em comparação com outras redes.`)
+}
+
+redesMaisQueridasMundo()
+
