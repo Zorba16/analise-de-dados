@@ -1,0 +1,56 @@
+import { getCSS, tickConfig, criarGrafico } from "./common.js"
+
+async function quantidadeUsuariosPorRedeSocial() {
+    const url = 'https://raw.githubusercontent.com/guilhermeonrails/api/main/numero-usuarios.json'
+    const resposta = await fetch(url)
+    const dadosRedes = await resposta.json()
+    const redesSociais = Object.keys(dadosRedes)
+    const usuariosPorRede = Object.values(dadosRedes)
+
+    const graficoDados = [
+        {
+            x: redesSociais, 
+            y: usuariosPorRede, 
+            type: 'bar',
+            marker: {
+                color: getCSS('--highlight-color')
+            }
+        }
+    ]
+
+    const configuracaoLayout = {
+        plot_bgcolor: getCSS('--background-light'),
+        paper_bgcolor: getCSS('--background-light'),
+        title: {
+            text: 'Top redes sociais com mais usuários globais',
+            x: 0.5,
+            font: {
+                color: getCSS('--accent-color'),
+                family: getCSS('--font-family'),
+                size: 28
+            }
+        },
+        xaxis: {
+            tickfont: tickConfig,
+            title: {
+                text: 'Redes sociais',
+                font: {
+                    color: getCSS('--text-color')
+                }
+            }
+        },
+        yaxis: {
+            tickfont: tickConfig,
+            title: {
+                text: 'Bilhões de usuários ativos',
+                font: {
+                    color: getCSS('--text-color')
+                }
+            }
+        }
+    }
+
+    criarGrafico(graficoDados, configuracaoLayout)
+}
+
+quantidadeUsuariosPorRedeSocial()
